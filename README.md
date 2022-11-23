@@ -35,7 +35,7 @@ this library as and when I need features for various projects.
     status := PostStatus{Text: "This post is from golang"}
     _, error := client.Post(status)
     if err != nil {
-    panic(err)
+      panic(err)
     }
 
 You can get the access token by logging into your Mastodon account, going into settings,

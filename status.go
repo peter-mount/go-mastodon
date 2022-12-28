@@ -79,7 +79,7 @@ func (c *client) Post(status PostStatus) (*Status, error) {
 			}
 
 			return nil
-		}, params, resp)
+		}, &params, resp)
 
 	if err != nil {
 		return resp, err

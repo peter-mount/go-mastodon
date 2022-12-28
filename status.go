@@ -50,6 +50,26 @@ func (c *client) Post(status PostStatus) (*Status, error) {
 		params["in_reply_to_id"] = strconv.FormatInt(status.InReplyTo, 10)
 	}
 
+	for i, id := range status.MediaIds {
+		if id < 1 {
+			return nil, ErrInvalidID
+		}
+		qID := fmt.Sprintf("media_ids[%d]", i)
+		params[qID] = strconv.FormatInt(id, 10)
+	}
+
+	if status.Sensitive {
+		params["sensitive"] = "true"
+	}
+
+	if status.SpoilerText != "" {
+		params["spoiler_text"] = status.SpoilerText
+	}
+
+	if status.Visibility != "" {
+		params["visibility"] = status.Visibility
+	}
+
 	resp := &Status{}
 
 	err := c.request("POST", "/api/v1/statuses",
@@ -58,28 +78,8 @@ func (c *client) Post(status PostStatus) (*Status, error) {
 				req.Header.Set("Idempotency-Key", status.IdempotencyKey)
 			}
 
-			for i, id := range status.MediaIds {
-				if id < 1 {
-					return ErrInvalidID
-				}
-				qID := fmt.Sprintf("media_ids[%d]", i)
-				params[qID] = strconv.FormatInt(id, 10)
-			}
-
-			if status.Sensitive {
-				params["sensitive"] = "true"
-			}
-
-			if status.SpoilerText != "" {
-				params["spoiler_text"] = status.SpoilerText
-			}
-
-			if status.Visibility != "" {
-				params["visibility"] = status.Visibility
-			}
-
 			return nil
-		}, &params, resp)
+		}, params, resp)
 
 	if err != nil {
 		return resp, err

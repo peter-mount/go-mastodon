@@ -39,13 +39,13 @@ func (c *client) getUri(endpoint string) string {
 
 type RequestHandler func(req *http.Request, payload interface{}) error
 
-func (c *client) request(method, endpoint string, reqHandler RequestHandler, params *RequestParams, resp interface{}) error {
+func (c *client) request(method, endpoint string, reqHandler RequestHandler, params RequestParams, resp interface{}) error {
 	var body io.Reader
 
 	contentType := ""
 	if params != nil {
 		form := make(url.Values)
-		for key, val := range *params {
+		for key, val := range params {
 			form.Add(key, val)
 		}
 		body = strings.NewReader(form.Encode())
